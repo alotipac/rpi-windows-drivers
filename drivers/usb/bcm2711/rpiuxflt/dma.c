@@ -4,7 +4,7 @@
 #define SCATTER_GATHER_LIST_MIN_SIZE (sizeof(SCATTER_GATHER_LIST) + sizeof(SCATTER_GATHER_ELEMENT))
 #define FILTER_ADAPTER_MAX_PAGES 128
 #define FILTER_SCATTER_GATHER_MAX_SIZE (FILTER_ADAPTER_MAX_PAGES * PAGE_SIZE)
-#define FILTER_NUM_BOUNCE_BUFFERS 32
+#define FILTER_NUM_BOUNCE_BUFFERS 128
 #define FILTER_MAX_DMA_PHYSICAL_ADDRESS 0xbfffffff
 
 typedef struct _SCATTER_GATHER_HEADER
@@ -181,7 +181,7 @@ Dma_GetScatterGatherList(
     KeReleaseSpinLock(&pFilterAdapter->BounceBufferLock, savedIrql);
 
     if (pBounceBuffer == NULL) {
-        return STATUS_UNSUCCESSFUL;
+        KeBugCheckEx(HAL_MEMORY_ALLOCATION, 0, 0, 0, 0);
     }
 
     if (WriteToDevice) {
